@@ -1,21 +1,24 @@
 <?php
 /**
  * Plugin Name: Kebbet plugins - Custom Post Type: Event
- * Plugin URI: https://github.com/kebbet/kebbet-cpt-event
+ * Plugin URI:  https://github.com/kebbet/kebbet-cpt-event
  * Description: Registers a Custom Post Type.
- * Version: 20210519.02
- * Author: Erik Betshammar
- * Author URI: https://verkan.se
+ * Version:     1.2.0
+ * Author:      Erik Betshammar
+ * Author URI:  https://verkan.se
+ * Update URI:  false
  *
  * @package kebbet-cpt-event
+ * @author Erik Betshammar
  */
 
 namespace kebbet\cpt\event;
 
-const POSTTYPE = 'event';
-const SLUG     = 'e';
-const ICON     = 'calendar';
-const MENUPOS  = 6;
+const POSTTYPE    = 'event';
+const SLUG        = 'calendar';
+const ICON        = 'calendar';
+const MENUPOS     = 6;
+const THUMBNAIL   = false;
 
 /**
  * Link to ICONS
@@ -29,6 +32,9 @@ const MENUPOS  = 6;
 function init() {
 	load_textdomain();
 	register();
+	if ( true === THUMBNAIL ) {
+		add_theme_support( 'post-thumbnails' );
+	}
 }
 add_action( 'init', __NAMESPACE__ . '\init', 0 );
 
@@ -61,13 +67,11 @@ function load_textdomain() {
  * Register Custom Post Type
  */
 function register() {
-
-	$labels_args       = array(
+	$labels_args  = array(
 		'name'                     => _x( 'Events', 'Post Type General Name', 'kebbet-cpt-event' ),
 		'singular_name'            => _x( 'Event', 'Post Type Singular Name', 'kebbet-cpt-event' ),
 		'menu_name'                => __( 'Events', 'kebbet-cpt-event' ),
 		'name_admin_bar'           => __( 'Event post', 'kebbet-cpt-event' ),
-		'parent_item_colon'        => __( 'Parent post:', 'kebbet-cpt-event' ),
 		'all_items'                => __( 'All posts', 'kebbet-cpt-event' ),
 		'add_new_item'             => __( 'Add new', 'kebbet-cpt-event' ),
 		'add_new'                  => __( 'Add new post', 'kebbet-cpt-event' ),
@@ -100,28 +104,23 @@ function register() {
 		'item_link'                => __( 'Event post link', 'kebbet-cpt-event' ),
 		'item_link_description'    => __( 'A link to an event post', 'kebbet-cpt-event' ),
 	);
-	$supports_args     = array(
-		'author',
+	$supports_args= array(
 		'title',
 		'editor',
-		'thumbnail',
 		'page-attributes',
 	);
+
+	if ( true === THUMBNAIL ) {
+		$supports_args = array_merge( $supports_args, array( 'thumbnail' ) );
+	}
+
 	$rewrite_args      = array(
 		'slug'       => SLUG,
-		'with_front' => false,
-		'pages'      => false,
-		'feeds'      => true,
-	);
-	$capabilities_args = array(
-		'edit_post'          => 'edit_' . POSTTYPE,
-		'edit_posts'         => 'edit_' . POSTTYPE .'s',
-		'edit_others_posts'  => 'edit_others_' . POSTTYPE .'s',
-		'publish_posts'      => 'publish_' . POSTTYPE .'s',
-		'read_post'          => 'read_' . POSTTYPE .'s',
-		'read_private_posts' => 'read_private_' . POSTTYPE .'s',
-		'delete_post'        => 'delete_' . POSTTYPE,
-	);
+		'with_front' => true,
+		'pages'      => true,
+		'feeds'      => false,
+		);
+	$capabilities_args = \cpt\kebbet\event\roles\capabilities();
 	$post_type_args    = array(
 		'label'               => __( 'Event post type', 'kebbet-cpt-event' ),
 		'description'         => __( 'Custom post type for event', 'kebbet-cpt-event' ),
@@ -143,126 +142,11 @@ function register() {
 		'rewrite'             => $rewrite_args,
 		'capabilities'        => $capabilities_args,
 		// Adding map_meta_cap will map the meta correctly.
-		'show_in_rest'        => true,
+		'show_in_rest'        => false,
 		'map_meta_cap'        => true,
 	);
 	register_post_type( POSTTYPE, $post_type_args );
 }
-
-/**
- * Adds custom capabilities to CPT. Adjust it with plugin URE later with its UI.
- */
-function add_custom_capabilities() {
-
-	// Gets the editor and administrator roles.
-	$admins = get_role( 'administrator' );
-	$editor = get_role( 'editor' );
-
-	// Add custom capabilities.
-	$admins->add_cap( 'edit_' . POSTTYPE );
-	$admins->add_cap( 'edit_' . POSTTYPE .'s' );
-	$admins->add_cap( 'edit_others_' . POSTTYPE .'s' );
-	$admins->add_cap( 'publish_' . POSTTYPE .'s' );
-	$admins->add_cap( 'read_' . POSTTYPE .'s' );
-	$admins->add_cap( 'read_private_' . POSTTYPE .'s' );
-	$admins->add_cap( 'delete_' . POSTTYPE );
-
-	$editor->add_cap( 'edit_' . POSTTYPE );
-	$editor->add_cap( 'edit_' . POSTTYPE .'s' );
-	$editor->add_cap( 'edit_others_' . POSTTYPE .'s' );
-	$editor->add_cap( 'publish_' . POSTTYPE .'s' );
-	$editor->add_cap( 'read_' . POSTTYPE .'s' );
-	$editor->add_cap( 'read_private_' . POSTTYPE .'s' );
-	$editor->add_cap( 'delete_' . POSTTYPE );
-}
-add_action( 'admin_init', __NAMESPACE__ . '\add_custom_capabilities');
-
-/**
- * Post type update messages.
- *
- * See /wp-admin/edit-form-advanced.php
- *
- * @param array $messages Existing post update messages.
- *
- * @return array Amended post update messages with new CPT update messages.
- */
-function post_updated_messages( $messages ) {
-
-	$post             = get_post();
-	$post_type        = get_post_type( $post );
-	$post_type_object = get_post_type_object( $post_type );
-
-	$messages[ POSTTYPE ] = array(
-		0  => '',
-		1  => __( 'Post updated.', 'kebbet-cpt-event' ),
-		2  => __( 'Custom field updated.', 'kebbet-cpt-event' ),
-		3  => __( 'Custom field deleted.', 'kebbet-cpt-event' ),
-		4  => __( 'Post updated.', 'kebbet-cpt-event' ),
-		/* translators: %s: date and time of the revision */
-		5  => isset( $_GET['revision'] ) ? sprintf( __( 'Post restored to revision from %s', 'kebbet-cpt-event' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-		6  => __( 'Post published.', 'kebbet-cpt-event' ),
-		7  => __( 'Post saved.', 'kebbet-cpt-event' ),
-		8  => __( 'Post submitted.', 'kebbet-cpt-event' ),
-		9  => sprintf(
-			/* translators: %1$s: date and time of the scheduled post */
-			__( 'Post scheduled for: <strong>%1$s</strong>.', 'kebbet-cpt-event' ),
-			date_i18n( __( 'M j, Y @ G:i', 'kebbet-cpt-event' ), strtotime( $post->post_date ) )
-		),
-		10 => __( 'Post draft updated.', 'kebbet-cpt-event' ),
-	);
-	if ( $post_type_object->publicly_queryable && POSTTYPE === $post_type ) {
-
-		$permalink         = get_permalink( $post->ID );
-		$view_link         = sprintf(
-			' <a href="%s">%s</a>',
-			esc_url( $permalink ),
-			__( 'View Post', 'kebbet-cpt-event' )
-		);
-		$preview_permalink = add_query_arg( 'preview', 'true', $permalink );
-		$preview_link      = sprintf(
-			' <a target="_blank" href="%s">%s</a>',
-			esc_url( $preview_permalink ),
-			__( 'Preview Post', 'kebbet-cpt-event' )
-		);
-
-		$messages[ $post_type ][1]  .= $view_link;
-		$messages[ $post_type ][6]  .= $view_link;
-		$messages[ $post_type ][9]  .= $view_link;
-		$messages[ $post_type ][8]  .= $preview_link;
-		$messages[ $post_type ][10] .= $preview_link;
-
-	}
-
-	return $messages;
-
-}
-add_filter( 'post_updated_messages', __NAMESPACE__ . '\post_updated_messages' );
-
-/**
- * Custom bulk post updates messages
- *
- * @param array  $bulk_messages The messages for bulk updating posts.
- * @param string $bulk_counts Number of updated posts.
- */
-function bulk_post_updated_messages( $bulk_messages, $bulk_counts ) {
-
-	$bulk_messages[ POSTTYPE ] = array(
-		/* translators: %$1s: singular of posts, %$2s: plural of posts.  */
-		'updated'   => _n( '%$1s post updated.', '%$2s posts updated.', $bulk_counts['updated'], 'kebbet-cpt-event' ),
-		/* translators: %$1s: singular of posts, %$2s: plural of posts.  */
-		'locked'    => _n( '%$1s post not updated, somebody is editing it.', '%$2s posts not updated, somebody is editing them.', $bulk_counts['locked'], 'kebbet-cpt-event' ),
-		/* translators: %$1s: singular of posts, %$2s: plural of posts.  */
-		'deleted'   => _n( '%$1s post permanently deleted.', '%$2s posts permanently deleted.', $bulk_counts['deleted'], 'kebbet-cpt-event' ),
-		/* translators: %$1s: singular of posts, %$2s: plural of posts.  */
-		'trashed'   => _n( '%$1s post moved to the Trash.', '%$2s posts moved to the Trash.', $bulk_counts['trashed'], 'kebbet-cpt-event' ),
-		/* translators: %$1s: singular of posts, %$2s: plural of posts.  */
-		'untrashed' => _n( '%$1s post restored from the Trash.', '%$2s posts restored from the Trash.', $bulk_counts['untrashed'], 'kebbet-cpt-event' ),
-	);
-
-	return $bulk_messages;
-
-}
-add_filter( 'bulk_post_updated_messages', __NAMESPACE__ . '\bulk_post_updated_messages', 10, 2 );
 
 /**
  * Add the content to the `At a glance`-widget.
@@ -273,3 +157,18 @@ require_once plugin_dir_path( __FILE__ ) . 'inc/at-a-glance.php';
  * Adds and modifies the admin columns for the post type.
  */
 require_once plugin_dir_path( __FILE__ ) . 'inc/admin-columns.php';
+
+/**
+ * Adjust roles and capabilities for post type
+ */
+require_once plugin_dir_path( __FILE__ ) . 'inc/roles.php';
+
+/**
+ * Adds admin messages for the post type.
+ */
+require_once plugin_dir_path( __FILE__ ) . 'inc/admin-messages.php';
+
+/**
+ * Adds contextual help.
+ */
+require_once plugin_dir_path( __FILE__ ) . 'inc/help.php';
