@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Within Practice - Post type: Events\n"
 "POT-Creation-Date: 2022-04-20 09:24+0200\n"
-"PO-Revision-Date: 2022-04-20 09:34+0200\n"
+"PO-Revision-Date: 2022-04-20 09:39+0200\n"
 "Last-Translator: Erik Betshammar <info@verkan.se>\n"
 "Language-Team: Erik Betshammar <info@verkan.se>\n"
 "Language: sv_SE\n"
@@ -38,7 +38,7 @@ msgstr "Arrangemangets datum och tider"
 
 #: inc/admin-columns.php:25
 msgid "Published and edited"
-msgstr "Publicerad och ändrad"
+msgstr "Publicerat och ändrat"
 
 #: inc/admin-columns.php:48
 msgid "Title not defined"
@@ -236,7 +236,7 @@ msgstr "För mer information:"
 #: inc/help.php:114
 #, php-format
 msgid "%sEdit Posts Documentation%s"
-msgstr ""
+msgstr "%sDokumentation om att redigera inlägg%s"
 
 #: inc/help.php:115
 #, php-format
@@ -408,27 +408,3 @@ msgstr "Erik Betshammar"
 #. Author URI of the plugin/theme
 msgid "https://verkan.se"
 msgstr "https://verkan.se"
-
-#~ msgid "Event"
-#~ msgstr "Arrangemang"
-
-#~ msgid "Parent event:"
-#~ msgstr "Förälder:"
-
-#~ msgid "New Event"
-#~ msgstr "Nytt arrangemang"
-
-#~ msgid "View event"
-#~ msgstr "Visa arrangemanget"
-
-#~ msgid "Thumbnail not yet defined"
-#~ msgstr "Bild är ännu inte fastställd"
-
-#~ msgid "Date"
-#~ msgstr "Datum"
-
-#~ msgid "at"
-#~ msgstr "kl"
-
-#~ msgid "Within Practice - Post type: Events"
-#~ msgstr "Within Practice - Anpassad posttyp: Arrangemang"
