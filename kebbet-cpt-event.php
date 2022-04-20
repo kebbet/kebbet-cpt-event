@@ -67,7 +67,7 @@ function load_textdomain() {
  * Register Custom Post Type
  */
 function register() {
-	$labels_args  = array(
+	$labels_args   = array(
 		'name'                     => _x( 'Events', 'Post Type General Name', 'kebbet-cpt-event' ),
 		'singular_name'            => _x( 'Event', 'Post Type Singular Name', 'kebbet-cpt-event' ),
 		'menu_name'                => __( 'Events', 'kebbet-cpt-event' ),
@@ -99,12 +99,11 @@ function register() {
 		'item_reverted_to_draft'   => __( 'Post reverted to Draft', 'kebbet-cpt-event' ),
 		'item_scheduled'           => __( 'Post scheduled', 'kebbet-cpt-event' ),
 		'item_updated'             => __( 'Post updated', 'kebbet-cpt-event' ),
-		// 5.7 + 5.8
 		'filter_by_date'           => __( 'Filter posts by date', 'kebbet-cpt-event' ),
 		'item_link'                => __( 'Event post link', 'kebbet-cpt-event' ),
 		'item_link_description'    => __( 'A link to an event post', 'kebbet-cpt-event' ),
 	);
-	$supports_args= array(
+	$supports_args = array(
 		'title',
 		'editor',
 		'page-attributes',
@@ -119,7 +118,7 @@ function register() {
 		'with_front' => true,
 		'pages'      => true,
 		'feeds'      => false,
-		);
+	);
 	$capabilities_args = \cpt\kebbet\event\roles\capabilities();
 	$post_type_args    = array(
 		'label'               => __( 'Event post type', 'kebbet-cpt-event' ),
@@ -141,7 +140,6 @@ function register() {
 		'publicly_queryable'  => true,
 		'rewrite'             => $rewrite_args,
 		'capabilities'        => $capabilities_args,
-		// Adding map_meta_cap will map the meta correctly.
 		'show_in_rest'        => false,
 		'map_meta_cap'        => true,
 	);
