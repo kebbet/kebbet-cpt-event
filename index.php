@@ -2,7 +2,7 @@
 /**
  * Silence is golden
  *
- * @package stamsund-program
+ * @package kebbet-cpt-event
  */
 
 exit;
