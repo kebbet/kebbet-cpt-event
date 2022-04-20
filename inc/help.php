@@ -10,6 +10,7 @@
 namespace cpt\kebbet\event\help;
 
 use const cpt\kebbet\event\POSTTYPE;
+use const cpt\kebbet\event\THUMBNAIL;
 
 /**
  * Display contextual help for calendar events
@@ -36,14 +37,14 @@ function add_context_menu_help() {
 
 	switch ( $current_screen->id ) {
 		 // The edit view.
-		case 'calendar':
-			$current_screen->set_help_sidebar( content_sidebar() );
-			$current_screen->add_help_tab( $args_tab_1 );
-			$current_screen->add_help_tab( $args_tab_2 );
+		case POSTTYPE:
+			// $current_screen->set_help_sidebar( content_sidebar() );
+			// $current_screen->add_help_tab( $args_tab_1 );
+			// $current_screen->add_help_tab( $args_tab_2 );
 			break;
 
 		// The list view.
-		case 'edit-calendar':
+		case 'edit-' . POSTTYPE:
 			$current_screen->set_help_sidebar( content_sidebar() );
 			$current_screen->add_help_tab( $args_tab_3 );
 			break;
@@ -63,7 +64,9 @@ function content_tab_1() {
 	$tab_content  = '<h4>' . __( 'Things to remember when adding or editing an calendar event:', 'kebbet-cpt-event' ) . '</h4>';
 	$tab_content .= '<ul>';
 	$tab_content .= '<li>' . __( 'Specify the correct title', 'kebbet-cpt-event' ) . '</li>';
-	$tab_content .= '<li>' . __( 'Specify the correct thumbnail of the event. Remember that the image will be shown on the front page of the website.', 'kebbet-cpt-event' ) . '</li>';
+	if ( THUMBNAIL ) {
+		$tab_content .= '<li>' . __( 'Specify the correct thumbnail of the event. Remember that the image will be shown on the front page of the website.', 'kebbet-cpt-event' ) . '</li>';
+	}
 	$tab_content .= '<li>' . __( 'Specify the correct year of the event. Remember that the year will be shown on the website.', 'kebbet-cpt-event' ) . '</li>';
 	$tab_content .= '</ul>';
 
