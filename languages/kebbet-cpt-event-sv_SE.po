@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Within Practice - Post type: Events\n"
+"Project-Id-Version: Kebbet plugins - custom post type: event\n"
 "POT-Creation-Date: 2022-04-20 09:24+0200\n"
-"PO-Revision-Date: 2022-04-20 09:39+0200\n"
+"PO-Revision-Date: 2022-04-20 10:42+0200\n"
 "Last-Translator: Erik Betshammar <info@verkan.se>\n"
 "Language-Team: Erik Betshammar <info@verkan.se>\n"
 "Language: sv_SE\n"
@@ -299,7 +299,7 @@ msgstr "Sök inlägg"
 
 #: kebbet-cpt-event.php:84
 msgid "Not found"
-msgstr "Kunde inte hittas"
+msgstr "Inget hittades"
 
 #: kebbet-cpt-event.php:85
 msgid "No posts found in Trash"
