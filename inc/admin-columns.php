@@ -5,39 +5,25 @@
  * @package kebbet-cpt-event
  */
 
-namespace kebbet\cpt\event\admincolumns;
+namespace cpt\kebbet\event\admincolumns;
 
-use const kebbet\cpt\event\POSTTYPE;
-
-/**
- * Column orders (set image first)
- *
- * @param array $columns The columns in the table.
- * @return array $columns The columns, in the new order.
- */
-function column_order( $columns ) {
-	$n_columns = array();
-	// Move thumbnail to before title column.
-	$before = 'title';
-
-	foreach ( $columns as $key => $value ) {
-		if ( $key === $before ) {
-			$n_columns['thumbnail'] = '';
-		}
-		$n_columns[ $key ] = $value;
-	}
-	return $n_columns;
-}
-add_filter( 'manage_' . POSTTYPE . '_posts_columns', __NAMESPACE__ . '\column_order' );
+use const cpt\kebbet\event\POSTTYPE;
 
 /**
  * Add additional admin column.
  *
  * @param array $columns The existing columns.
+ * @return array
  */
 function set_admin_column_list( $columns ) {
-	$columns['modified']  = __( 'Last modified', 'kebbet-cpt-event' );
-	$columns['thumbnail'] = __( 'Featured image', 'kebbet-cpt-event' );
+	unset( $columns['modified'] );
+	unset( $columns['date'] );
+
+	$columns['title']       = _x( 'Title / Name', 'Heading for column', 'kebbet-cpt-event' );
+	$columns['name']        = _x( 'Title if name', 'Heading for column', 'kebbet-cpt-event' );
+	$columns['date_time']   = _x( 'Event date & time', 'Heading for column', 'kebbet-cpt-event' );
+	$columns['last_edited'] = __( 'Published and edited','kebbet-cpt-event' );
+	
 	return $columns;
 }
 add_filter( 'manage_' . POSTTYPE . '_posts_columns', __NAMESPACE__ . '\set_admin_column_list' );
@@ -47,40 +33,88 @@ add_filter( 'manage_' . POSTTYPE . '_posts_columns', __NAMESPACE__ . '\set_admin
  *
  * @param string $column The column slug.
  * @param int    $post_id The post ID for the row.
+ * @return void
  */
 function populate_custom_columns( $column, $post_id ) {
-	
-	if ( 'modified' === $column ) {
-		$format   = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
-		$modified = get_the_modified_date( $format );
-		if ( $modified ) {
-			echo $modified;
-		}
-	}
-	if ( 'thumbnail' === $column ) {
-		$thumbnail = get_the_post_thumbnail(
-			$post_id,
-			'thumbnail',
-			array(
-				'style' => 'max-width: 80px; height: auto;',
-			)
-		);
-		if ( $thumbnail ) {
-			echo $thumbnail;
-		} else {
-			echo __( 'No image is set.', 'kebbet-cpt-event' );
-		}
+	$date_format  = 'Y-m-d';
+	$time_format  = 'H:i';
+
+	switch ( $column ) {
+		case "name":
+			$extra_title = get_post_meta( $post_id, 'title_participants_tags_participants_text__participant', true );
+			if ( ! empty( $extra_title ) ) {
+		  		echo $extra_title;
+			} else {
+		  		echo '<i>' . __( 'Title not defined', 'kebbet-cpt-event' ) . '</i>';
+			}
+			break;
+  
+		case "date_time":
+			$output      = '<i>' . __( 'Date and time not yet defined', 'kebbet-cpt-event' ) . '</i>';
+			$time        = \get_field( 'whitin_event_datetime', $post_id );
+			$occurrences = false;
+			if ( isset( $time['event_occurrences'] ) ) {
+				$occurrences = $time['event_occurrences'];
+			}
+
+			if ( $occurrences ) {
+				$output = null;
+				$count  = count( $occurrences );
+
+				foreach ( $occurrences as $key => $event_details ) {
+  
+					$num   = $key+1;
+					$date  = $event_details['event_date'];
+					$start = $event_details['event_start_time'];
+					$end   = $event_details['event_end_time'];
+  
+					if ( 1 === $count) {
+						$output .= $date . ', ';
+					} else {
+						$output .= '<strong>#' . $num . '</strong>: ' . $date . ', ';
+					}
+
+					if ( ! empty( $end ) ) {
+						$output .= $start . '&ndash;' . $end;
+					} else {
+						$output .= $start;
+					}
+					$output .= '<br/>';
+		  		}
+			}
+			echo $output;
+			break;
+  
+		case 'last_edited':
+			switch ( get_post_status() ) {
+				case 'draft':
+					$string = __( 'Draft edited: %s at %s', 'kebbet-cpt-event' );
+					break;
+
+				case 'future':
+					$string = __( 'Planned for: %s at %s', 'kebbet-cpt-event' );
+					break;
+
+				case 'publish':
+				default:
+					$string = __( 'Published: %s at %s', 'kebbet-cpt-event' );
+					break;
+			}
+			$string  = sprintf(
+				$string,
+				esc_html( get_the_date( $date_format ) ),
+				esc_html( get_the_time( $time_format ) )
+			);
+			$string .= '<br/>';
+			$string .= sprintf(
+				__( 'Last edited: %s at %s', 'kebbet-cpt-event' ),
+				esc_html( get_the_modified_date( $date_format ) ),
+				esc_html( get_the_modified_date( $time_format ) )
+			);
+			$string .= '<br/>';
+
+			echo $string;
+			break;
 	}
 }
 add_action( 'manage_' . POSTTYPE . '_posts_custom_column', __NAMESPACE__ . '\populate_custom_columns', 10, 2 );
-
-/**
- * Make additional admin column sortable.
- *
- * @param array $columns The existing columns.
- */
-function define_admin_sortable_columns( $columns ) {
-	$columns['modified'] = 'modified';
-	return $columns;
-}
-add_filter( 'manage_edit-' . POSTTYPE . '_sortable_columns', __NAMESPACE__ . '\define_admin_sortable_columns' );

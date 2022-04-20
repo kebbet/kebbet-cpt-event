@@ -21,16 +21,16 @@ function add_custom_capabilities() {
 	);
 
 	foreach ( $roles as $role ) {
-		$role->add_cap( cap( '1') );
-		$role->add_cap( cap( '2') );
-		$role->add_cap( cap( '3') );
-		$role->add_cap( cap( '4') );
-		$role->add_cap( cap( '5') );
-		$role->add_cap( cap( '6') );
-		$role->add_cap( cap( '7') );
+		$role->add_cap( cap( '1' ) );
+		$role->add_cap( cap( '2' ) );
+		$role->add_cap( cap( '3' ) );
+		$role->add_cap( cap( '4' ) );
+		$role->add_cap( cap( '5' ) );
+		$role->add_cap( cap( '6' ) );
+		$role->add_cap( cap( '7' ) );
 	}
 }
-add_action( 'admin_init', __NAMESPACE__ . '\add_custom_capabilities');
+add_action( 'admin_init', __NAMESPACE__ . '\add_custom_capabilities' );
 
 /**
  * Return capabilities for `register_post_type`

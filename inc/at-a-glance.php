@@ -5,9 +5,9 @@
  * @package kebbet-cpt-event
  */
 
-namespace kebbet\cpt\event\at_a_glance;
+namespace cpt\kebbet\event\at_a_glance;
 
-use const kebbet\cpt\event\POSTTYPE;
+use const cpt\kebbet\event\POSTTYPE;
 
 /**
  * Adds post-type info to 'At a Glance'-dashboard widget.

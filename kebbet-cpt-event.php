@@ -12,7 +12,7 @@
  * @author Erik Betshammar
  */
 
-namespace kebbet\cpt\event;
+namespace cpt\kebbet\event;
 
 const POSTTYPE    = 'event';
 const SLUG        = 'calendar';
