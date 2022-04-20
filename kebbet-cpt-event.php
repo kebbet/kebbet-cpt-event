@@ -14,7 +14,7 @@
 
 namespace cpt\kebbet\event;
 
-const POSTTYPE    = 'event';
+const POSTTYPE    = 'calendar';
 const SLUG        = 'calendar';
 const ICON        = 'calendar';
 const MENUPOS     = 6;
