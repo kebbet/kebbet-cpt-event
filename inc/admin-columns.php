@@ -88,32 +88,32 @@ function populate_custom_columns( $column, $post_id ) {
 		case 'last_edited':
 			switch ( get_post_status() ) {
 				case 'draft':
-					$string = __( 'Draft edited: %s at %s', 'kebbet-cpt-event' );
+					$output = __( 'Draft edited: %s at %s', 'kebbet-cpt-event' );
 					break;
 
 				case 'future':
-					$string = __( 'Planned for: %s at %s', 'kebbet-cpt-event' );
+					$output = __( 'Planned for: %s at %s', 'kebbet-cpt-event' );
 					break;
 
 				case 'publish':
 				default:
-					$string = __( 'Published: %s at %s', 'kebbet-cpt-event' );
+					$output = __( 'Published: %s at %s', 'kebbet-cpt-event' );
 					break;
 			}
-			$string  = sprintf(
-				$string,
+			$output  = sprintf(
+				$output,
 				esc_html( get_the_date( $date_format ) ),
 				esc_html( get_the_time( $time_format ) )
 			);
-			$string .= '<br/>';
-			$string .= sprintf(
+			$output .= '<br/>';
+			$output .= sprintf(
 				__( 'Last edited: %s at %s', 'kebbet-cpt-event' ),
 				esc_html( get_the_modified_date( $date_format ) ),
 				esc_html( get_the_modified_date( $time_format ) )
 			);
-			$string .= '<br/>';
+			$output .= '<br/>';
 
-			echo $string;
+			echo $output;
 			break;
 	}
 }

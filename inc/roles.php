@@ -56,11 +56,11 @@ function capabilities() {
  *
  * @since 1.1.0
  *
- * @param string $value The value to get.
+ * @param string $capability_value The value to get.
  * @return string
  */
-function cap( $value ) {
-	switch ( $value ) {
+function cap( $capability_value ) {
+	switch ( $capability_value ) {
 		case '1':
 			$output = 'edit_' . POSTTYPE;
 			break;
